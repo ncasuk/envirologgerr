@@ -191,7 +191,7 @@ get_envirologger_data_worker <- function(url, tz, user, key, verbose) {
   # Get station from url
   station <- stringr::str_split_fixed(url, "/", 12)[, 12]
   station <- as.numeric(station)
-  
+
   # Get response
   response <- tryCatch({
     
@@ -248,12 +248,19 @@ get_envirologger_data_worker <- function(url, tz, user, key, verbose) {
     
     # Another catch
     if (!is.null(response)) {
-      
+     
+      #DEBUG
+      print(response$Timestamp)
+
       # Get dates
-      date <- response$Timestamp
+      date <- lubridate::fast_strptime(response$Timestamp,'%Y-%m-%dT%H:%M:%S%z')
+
+      #DEBUG
+      print(date)
+
       
       # Parse dates
-      date <- lubridate::ymd_hms(date, tz = tz)
+      date <- lubridate::fast_strptime(date, '%Y-%m-%dT%H:%M:%S' tz = tz)
       
       # Get observations
       df <- response$Channels
