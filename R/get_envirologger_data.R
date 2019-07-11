@@ -252,13 +252,13 @@ get_envirologger_data_worker <- function(url, tz, user, key, verbose) {
       # Get & Parse dates
       date <- lubridate::fast_strptime(response$TBTimestamp,'%Y-%m-%dT%H:%M:%S%z', tz = tz)
 
-      print(c(length(df), length(date)))
-
       # Parse dates
       #date <- lubridate::fast_strptime(date, '%Y-%m-%dT%H:%M:%S', tz = tz)
       
       # Get observations
       df <- response$Channels
+      print(c(length(df), length(date)))
+
 
       # Insert date into observations, an odd piece of code
       df <- mapply(cbind, df, "date" = date, SIMPLIFY = FALSE)
