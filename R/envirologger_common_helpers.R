@@ -1,7 +1,7 @@
 base_envirologger_url <- function(user, key) {
   
   # Build base
-  base_url <- "https://api.airmonitors.net/3.0/interface/"
+  base_url <- "https://api.airmonitors.net/3.5/interface/"
   base_url <- stringr::str_c(base_url, user, "/", key, "/")
   return(base_url)
   

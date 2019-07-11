@@ -32,7 +32,7 @@
 #' 
 #' @return Tibble. 
 #' 
-#' @seealso \href{https://api.airmonitors.net/3.0/documentation}{API Documentation},
+#' @seealso \href{https://api.airmonitors.net/3.5/documentation}{API Documentation},
 #' \code{\link{get_envirologger_stations}}
 #' 
 #' @examples 
