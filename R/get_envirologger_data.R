@@ -166,8 +166,8 @@ build_query_urls <- function(user, key, server, station, start, end, interval) {
   
   # Build query strings
   url <- stringr::str_c(
-    "stationdata/", 
-    df$date, "/", 
+    "stationdata/data/", 
+    strftime(lubridate::fast_strptime(df$date,'%Y%m%d%H'),'%Y%m%dT%H%M'), "/", 
     df$date_end, "/",
     df$station
   )
@@ -187,7 +187,7 @@ get_envirologger_data_worker <- function(url, tz, user, key, verbose) {
   
   # Message date and station codes
   if (verbose) {
-    stringr::str_split_fixed(url, "date/", 2)[, 2] %>% 
+    stringr::str_split_fixed(url, "/data/", 2)[, 2] %>% 
       message(date_message(), ., "...")
   }
   
