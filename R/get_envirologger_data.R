@@ -261,7 +261,8 @@ get_envirologger_data_worker <- function(url, tz, user, key, verbose) {
       print(tail(df, n=15))
       
       # Insert date into observations, an odd piece of code
-      df <- mapply(cbind, df, "date" = date, SIMPLIFY = FALSE)
+      #df <- mapply(cbind, df, "date" = date, SIMPLIFY = FALSE)
+      df <- cbind(df, "date" = date, SIMPLIFY = FALSE)
       
       # Create data frame
       df <- dplyr::bind_rows(df)
