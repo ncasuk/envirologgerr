@@ -57,6 +57,9 @@ get_envirologger_data <- function(user, key, station, start = NA,
   
   # Build query strings for api
   urls <- build_query_urls(user, key, server, station, start, end, interval)
+
+  print(urls)
+  quit(save = "no")
   
   # Get data
   df <- purrr::map_dfr(
