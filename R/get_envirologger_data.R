@@ -259,7 +259,7 @@ get_envirologger_data_worker <- function(url, tz, user, key, verbose) {
       df <- response$Channels
 
       # Insert date into observations, an odd piece of code
-      #df <- mapply(cbind, df, "date" = date, SIMPLIFY = FALSE)
+      df <- mapply(cbind, df, list("date" = date), SIMPLIFY = FALSE)
       #df <- cbind(df, "date" = date, SIMPLIFY = FALSE)
       
       # Create data frame
@@ -267,8 +267,6 @@ get_envirologger_data_worker <- function(url, tz, user, key, verbose) {
       
       # Add station key
       df$station <- station
-      # Insert date into observations, an odd piece of code
-      df$date <- date
       
       # Represent missing ness with NAs
       df <- df %>% 
