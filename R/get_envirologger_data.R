@@ -166,7 +166,7 @@ build_query_urls <- function(user, key, server, station, start, end, interval) {
   
   # Build query strings
   url <- stringr::str_c(
-    "stationdata/date/", 
+    "stationdata/", 
     df$date, "/", 
     df$date_end, "/",
     df$station
