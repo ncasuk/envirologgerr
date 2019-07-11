@@ -246,7 +246,7 @@ get_envirologger_data_worker <- function(url, tz, user, key, verbose) {
       
     })
     #DEBUG
-    print(response$Timestamp)
+    print(response)
     
     # Another catch
     if (!is.null(response)) {
