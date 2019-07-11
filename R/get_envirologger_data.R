@@ -258,11 +258,9 @@ get_envirologger_data_worker <- function(url, tz, user, key, verbose) {
       # Get observations
       df <- response$Channels
 
-      print(date)
-      
       # Insert date into observations, an odd piece of code
-      #df <- mapply(cbind, df, "date" = date, SIMPLIFY = FALSE)
-      df <- cbind(df, "date" = date, SIMPLIFY = FALSE)
+      df <- mapply(cbind, df, "date" = date, SIMPLIFY = FALSE)
+      #df <- cbind(df, "date" = date, SIMPLIFY = FALSE)
       
       # Create data frame
       df <- dplyr::bind_rows(df)
