@@ -246,13 +246,13 @@ get_envirologger_data_worker <- function(url, tz, user, key, verbose) {
       
     })
     #DEBUG
-    print(response$TBTimestamp)
+    print(response$TBTimestamp, response$TETimestamp)
     
     # Another catch
     if (!is.null(response)) {
 
       # Get & Parse dates
-      date <- lubridate::fast_strptime(response$Timestamp,'%Y-%m-%dT%H:%M:%S%z', tz = tz)
+      date <- lubridate::fast_strptime(response$TBTimestamp,'%Y-%m-%dT%H:%M:%S%z', tz = tz)
 
       # Parse dates
       #date <- lubridate::fast_strptime(date, '%Y-%m-%dT%H:%M:%S', tz = tz)
