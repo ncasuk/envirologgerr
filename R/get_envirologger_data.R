@@ -250,7 +250,7 @@ get_envirologger_data_worker <- function(url, tz, user, key, verbose) {
     if (!is.null(response)) {
 
       # Get & Parse dates
-      date <- lubridate::fast_strptime(response$TBTimestamp,'%Y-%m-%dT%H:%M:%S%z', tz = tz)
+      TBdate <- lubridate::fast_strptime(response$TBTimestamp,'%Y-%m-%dT%H:%M:%S%z', tz = tz)
 
       # Parse dates
       #date <- lubridate::fast_strptime(date, '%Y-%m-%dT%H:%M:%S', tz = tz)
@@ -259,7 +259,7 @@ get_envirologger_data_worker <- function(url, tz, user, key, verbose) {
       obsdata <- response$Channels
 
       # Insert date into observations, an odd piece of code
-      obsdata <- mapply(cbind, obsdata, "date" = date, SIMPLIFY = FALSE)
+      obsdata <- mapply(cbind, obsdata, "date" = TBdate, SIMPLIFY = FALSE)
       
       # Create data frame
       obsdata <- dplyr::bind_rows(obsdata)
