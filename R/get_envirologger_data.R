@@ -59,23 +59,23 @@ get_envirologger_data <- function(user, key, station, start = NA,
   urls <- build_query_urls(user, key, server, station, start, end, interval)
 
   # Get data
-  df <- purrr::map_dfr(
+  obsdata <- purrr::map_dfr(
     urls, 
     get_envirologger_data_worker, 
     tz = tz, 
     verbose = verbose
   )
   
-  if (!nrow(df) == 0) {
+  if (!nrow(obsdata) == 0) {
     
     # Clean names
-    names(df) <- str_underscore(names(df))
-    names(df) <- if_else(names(df) == "pre_scaled", "value", names(df))
+    names(obsdata) <- str_underscore(names(obsdata))
+    names(obsdata) <- if_else(names(obsdata) == "pre_scaled", "value", names(obsdata))
     
     # Remove true value duplicates
     if (remove_duplicates) {
       
-      df <- df %>% 
+      obsdata <- obsdata %>% 
         distinct(date,
                  station,
                  channel_number,
@@ -85,7 +85,7 @@ get_envirologger_data <- function(user, key, station, start = NA,
     }
     
     # Arrange variable order and arrange observations
-    df <- df %>% 
+    obsdata <- obsdata %>% 
       select(date, 
              station, 
              sensor_id, 
@@ -97,11 +97,11 @@ get_envirologger_data <- function(user, key, station, start = NA,
   } else {
     
     # No data to return
-    df <- tibble()
+    obsdata <- tibble()
     
   }
   
-  return(df)
+  return(obsdata)
   
 }
 
@@ -127,7 +127,7 @@ build_query_urls <- function(user, key, server, station, start, end, interval) {
   if (date_system == end) end <- end + lubridate::days(1)
   
   # Create mapping data frame, quite a bit of work and there still is overlap
-  df <- tibble(date = seq(start, end, interval)) %>% 
+  obsdata <- tibble(date = seq(start, end, interval)) %>% 
     mutate(date_end = dplyr::lead(date),
            date_end_lag = dplyr::lag(date_end),
            date_end_lag = if_else(is.na(date_end_lag), date_end, date_end_lag),
@@ -146,27 +146,27 @@ build_query_urls <- function(user, key, server, station, start, end, interval) {
   if (length(station) == 1) {
     
     # Just add station
-    df$station <- station
+    obsdata$station <- station
     
   } else {
     
     # Replicate dates
-    df <- replicate_rows(df, length(station))
+    obsdata <- replicate_rows(obsdata, length(station))
     
     # Add station vector
-    df$station <- station
+    obsdata$station <- station
     
     # Arrange by station
-    df <- arrange(df, station)
+    obsdata <- arrange(obsdata, station)
     
   }
   
   # Build query strings
   url <- stringr::str_c(
     "stationdata/data/", 
-    strftime(lubridate::fast_strptime(df$date,'%Y%m%d%H'),'%Y%m%dT%H%M'), "/", 
-    df$date_end, "/",
-    df$station
+    strftime(lubridate::fast_strptime(obsdata$date,'%Y%m%d%H'),'%Y%m%dT%H%M'), "/", 
+    obsdata$date_end, "/",
+    obsdata$station
   )
   
   # Add base of url 
@@ -256,19 +256,19 @@ get_envirologger_data_worker <- function(url, tz, user, key, verbose) {
       #date <- lubridate::fast_strptime(date, '%Y-%m-%dT%H:%M:%S', tz = tz)
       
       # Get observations
-      df <- response$Channels
+      obsdata <- response$Channels
 
       # Insert date into observations, an odd piece of code
-      df <- mapply(cbind, df, "date" = date, SIMPLIFY = FALSE)
+      obsdata <- mapply(cbind, obsdata, "date" = date, SIMPLIFY = FALSE)
       
       # Create data frame
-      df <- dplyr::bind_rows(df)
+      obsdata <- dplyr::bind_rows(obsdata)
       
       # Add station key
-      df$station <- station
+      obsdata$station <- station
       
       # Represent missing ness with NAs
-      df <- df %>% 
+      obsdata <- obsdata %>% 
         mutate(PreScaled = if_else(PreScaled == -999, NA_real_, PreScaled),
                Scaled = if_else(Scaled == -999, NA_real_, Scaled)) %>% 
         as_tibble()
@@ -278,10 +278,10 @@ get_envirologger_data_worker <- function(url, tz, user, key, verbose) {
   } else {
   
     # Return empty tibble, reassign tryCatch return
-    df <- tibble()
+    obsdata <- tibble()
     
   }
   
-  return(df)
+  return(obsdata)
   
 }
