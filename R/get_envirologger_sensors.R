@@ -38,6 +38,8 @@ get_envirologger_sensors <- function(user, key) {
   
   # Clean names
   names(df) <- str_underscore(names(df))
+  colnames(df)[colnames(df)=="sensor_label"] <- "label"
+  colnames(df)[colnames(df)=="sensor_name"] <- "sensor"
   
   # Lower case and trim the label variable
   df$label <- stringr::str_to_lower(df$label)
@@ -45,7 +47,7 @@ get_envirologger_sensors <- function(user, key) {
   
   # Arrange
   df <- df %>% 
-    arrange(sensor_id) %>% 
+    arrange(label) %>% 
     as_tibble()
 
   return(df)

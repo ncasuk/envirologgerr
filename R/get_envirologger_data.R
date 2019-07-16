@@ -71,6 +71,10 @@ get_envirologger_data <- function(user, key, station, start = NA,
     # Clean names
     names(obsdata) <- str_underscore(names(obsdata))
     names(obsdata) <- if_else(names(obsdata) == "pre_scaled", "value", names(obsdata))
+
+    #Rename APIv3.5 columns to same as v3.0 for compatibility with smonitor
+    colnames(obsdata)[colnames(obsdata)=="channel"] <- "channel_number"
+    colnames(obsdata)[colnames(obsdata)=="sensor_label"] <- "sensor_label"
     
     # Remove true value duplicates
     if (remove_duplicates) {
@@ -88,7 +92,7 @@ get_envirologger_data <- function(user, key, station, start = NA,
     obsdata <- obsdata %>% 
       select(date, 
              station, 
-             sensor_id, 
+             sensor_label, 
              value, 
              everything()) %>% 
       arrange(station, 
